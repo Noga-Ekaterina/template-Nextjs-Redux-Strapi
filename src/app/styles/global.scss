@@ -1,0 +1,198 @@
+@import './_fonts.scss';
+@import "./mixins-and-extends.scss";
+
+
+:root{
+  --vh: 1vh;
+  --btn-position-x: calc(var(--p-x) - 6rem);
+  --header-scale: 1;
+  --header-height: calc(43.7rem * var(--header-scale));
+
+  @supports (height: 1svh) {
+    --vh: 1svh;
+  }
+
+  // Для мобильных устройств используем svh, для десктопов - vh
+  @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+    --vh: 1vh; // На десктопах всегда используем vh
+  }
+
+  @include lg{
+    --w-line-main-screen: max(1.2px, 1.2rem);
+  }
+
+  @include md{
+    --header-scale: 1.3;
+  }
+
+  @include adaptive((
+          --p-x: (default: 28.5rem, xl: 48, sm: 20),
+          --h-btn: (default: 40rem, xxl: 80, xl: 60, md: 33, sm: 44)
+  ))
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: 'PT Root VF', sans-serif;
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+  color: var(--c-dark);
+  white-space: pre-line;
+  transition: color 0.5s, text-decoration-color 0.5s;
+}
+
+html{
+  overflow: hidden;
+  // font-size: calc(100vw / 1024);
+
+  @include sm{
+    font-size: calc(100vw / 390);
+  }
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  transition: 0.3s;
+  overflow: clip;
+}
+
+.lenis__content{
+  transition: 0.3s;
+}
+
+.lenis.lenis-smooth{
+  height: 100%;
+  overflow-y: auto;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar { width: 0 !important }
+}
+
+body {
+  font-family: 'PT Root VF', sans-serif;
+  background: var(--c-grey-bg-light-2);
+}
+
+.container{
+  max-width: 964rem;
+  margin-inline: auto;
+
+  @include adaptive((
+          max-width: (defaul: 967rem, xl: 1824, sm: 350)
+  ))
+}
+
+p{
+  color: inherit;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &, a:link, a:visited {
+    color: inherit;
+  }
+
+  &[href^="tel:"]{
+    cursor: default;
+  }
+}
+
+.link-underline, u {
+  @extend %link-underline
+}
+
+.link-underline:hover{
+  text-decoration-color: transparent;
+}
+
+.leaflet-control-attribution.leaflet-control{
+  transform: scale(0.1);
+}
+
+strong{
+  color: inherit;
+  font-size: inherit;
+}
+
+u{
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+
+  a &:hover{
+    text-decoration-color: transparent;
+  }
+}
+
+sub, sup{
+  color: inherit;
+  font-size: 0.75em;
+  font-weight: inherit;
+}
+
+fieldset {
+  border: none;
+}
+
+button, [type="submit"] {
+  display: inline-block;
+  box-shadow: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:disabled{
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+input{
+  box-shadow: none;
+  background-color: transparent;
+  background: none;
+  border: none;
+
+  &:focus{
+    border: none;
+    outline: none;
+  }
+}
+
+.btn-grey {
+  @extend %btn-grey;
+}
+
+label{
+  cursor: pointer;
+}
+
+table *{
+  font-variant-numeric: tabular-nums;
+}
+
+.btn--disable{
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+span{
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}

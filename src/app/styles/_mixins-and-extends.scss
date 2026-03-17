@@ -1,0 +1,252 @@
+@mixin xxl{
+  @media (min-width: 2560px) {
+    @content
+  }
+}
+
+@mixin xl{
+  @media (min-width: 1600px) {
+    @content
+  }
+}
+
+@mixin lg{
+  @media (max-width: 1600px) {
+    @content
+  }
+}
+
+@mixin lg-book{
+  @media (min-width: 1024px) and (min-height: 80vw){
+    @content
+  }
+}
+
+
+@mixin md {
+  @media screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin md-book{
+  @media (min-width: 660.1px) and (min-height: 80vw){
+    @content
+  }
+}
+
+@mixin sm{
+  @media (max-width: 660px) {
+    @content
+  }
+}
+
+@mixin flex-sb-c{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    @content;
+  }
+}
+
+// Базовые брейкпоинты
+$breakpoints: (
+        xl: '(min-width: 1600px)',
+        xxl: '(min-width: 2560px)',
+        lg: '(max-width: 1599.9px)',
+        lg-book: '(min-width: 1024px) and (min-height: 80vw)',
+        md: '(max-width: 1024px)',
+        md-book: '(min-width: 660.1px) and (min-height: 80vw)',
+        sm: '(max-width: 660px)',
+) !default;
+
+// Универсальный адаптивный миксин
+@mixin adaptive($properties) {
+  @each $prop, $values in $properties {
+    // Базовое значение
+    #{$prop}: map-get($values, default);
+
+    // Генерация медиазапросов
+    @each $bp-name, $bp-query in $breakpoints {
+      @if map-has-key($values, $bp-name) {
+        @media #{$bp-query} {
+          $value: map-get($values, $bp-name);
+
+          @if type-of($value) == number and unitless($value) {
+            #{$prop}: vu($value, $bp-name);
+          } @else {
+            #{$prop}: $value;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Настройки базовых ширины для брейкпоинтов
+$base-widths: (
+        xxl: (width: 2560, height: 1440),
+        xl: (width: 1920, height: 1080),
+        lg: (width: 1024, height: 600),
+        md: (width: 768, height: 500),
+        md-book: (width: 768, height: 1024),
+        sm: (width: 390, height: 900),
+) !default;
+
+@function svh($value: 1, $str: false){
+  @if($str){
+    @return #{'var(--vh) * #{$value}'}
+  }
+  @else {
+    @return calc(var(--vh) * $value)
+  }
+}
+
+// Функция для генерации динамических единиц
+@function vu($multiplier: 1, $breakpoint: null, $adaptiveHeight: false) {
+  @if $breakpoint {
+    $base: map-get($base-widths, $breakpoint);
+    $value: calc(#{$multiplier} * (100vw / #{map-get($base, "width")}));
+
+    @if $adaptiveHeight{
+      @return min(#{$value}, calc((#{$multiplier} / (#{map-get($base, "height")} / 100))*svh()))
+    }
+
+    @return $value
+  }
+    @return calc(#{$multiplier} * 1rem);
+}
+
+@mixin standard-font($small: false){
+  @include adaptive((
+          font-size: (
+                  default: if($small, 12rem, 13rem),
+                  xxl: 27,
+                  xl: if($small, 22, 25),
+                  md: 11,
+                  sm: 13
+          )
+  ));
+}
+
+
+@mixin standard-font-big{
+  @include adaptive((
+          font-size: (default: 17rem, xxl: 35, xl: 25, md: 15, sm: 20)
+  ))
+}
+
+@mixin standard-font-small{
+  @include adaptive((
+          font-size: (
+                  default: 9rem,
+                  xxl: 18,
+                  xl: 16,
+                  md: 9,
+                  sm: 10
+          )
+  ));
+}
+
+@mixin main-title-font {
+  @include adaptive((
+          font-size: (
+                  default: 27rem,
+                  xxl: 60,
+                  md-book: 35rem,
+                  sm: vu(27, sm, true)
+          )
+  ));
+
+  font-weight: 400;
+}
+@mixin title-font{
+  @include adaptive((
+          font-size: (
+                  default: 32rem,
+                  xxl: 77,
+                  xl: 60,
+                  md: 30,
+                  sm: 28
+          )
+  ));
+
+  font-weight: 300;
+  line-height: 1.05;
+}
+
+@mixin title-small-font{
+  @include adaptive((
+          font-size: (
+                  default: 23rem,
+                  xxl: 55,
+                  xl: 45,
+                  md: 22,
+                  sm: 24
+          )
+  ));
+
+  font-weight: 500;
+  transform: translateX(-0.02em);
+
+  @supports (-webkit-text-stroke: 0.3em currentColor) {
+    -webkit-text-stroke: 0.1px currentColor;
+    font-weight: 400;
+  }
+}
+
+
+@mixin title-small-font2{
+  @include adaptive((
+          font-size: (
+                  default: 22rem,
+                  xxl: 38,
+                  xl: 30,
+                  md: 17,
+                  sm: 20
+          )
+  ));
+
+  font-weight: 500;
+}
+
+%link-underline{
+  text-decoration-line: underline;
+  text-underline-offset: 0.16em;
+  text-decoration-skip-ink: none;
+}
+
+%link-hover-underline{
+  @extend %link-underline;
+  text-decoration-color: transparent;
+
+  &:hover{
+    text-decoration-color: currentColor;
+  }
+
+  &:has(u):hover, &[href^="tel:"]{
+    text-decoration-color: transparent;
+  }
+}
+
+%text-overflow-ellipsis{
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin hover-scale($scale: 1.2){
+  transition: 0.5s;
+
+  &:hover{
+    transform: scale($scale);
+  }
+
+  &:active{
+    transition: 0.1s;
+    transform: scale(1);
+  }
+}
