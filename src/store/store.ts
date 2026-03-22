@@ -33,6 +33,7 @@ const rootReducer = combineReducers({
   [uiSlice.name]: uiSlice.reducer,
 });
 
+// для Redux и localStorage
 const persistConfig = {
   key: "redux",
   storage,
@@ -44,13 +45,13 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const makeStore = () =>
   configureStore({
     reducer: persistedReducer,
-    // для Redux Query
+    // для Redux и localStorage
     // middleware: (getDefaultMiddleware) =>
     //   getDefaultMiddleware({
     //     serializableCheck: {
     //       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     //     },
-    //   }).concat(exampleApi.middleware),
+    //   }).concat(exampleApi.middleware), // для RTK Query
   });
 
 export const wrapper = createWrapper(makeStore);
